@@ -246,6 +246,8 @@ class Sort(object):
       return np.concatenate(ret)
     return np.empty((0,5))
 
+"""new code begins here"""
+
 def yolodet_to_sortdet(det):
   """converts a detection of the form [class, x_center, y_center, width, height, score] to the form
   [x1, x2, y1, y2, score] """
@@ -257,6 +259,17 @@ def yolodet_to_sortdet(det):
                    det[5]]) * 640.
 
 def update_outfile(trackers, yolodets, frame, file_obj):
+  """
+  adds new rows to the output file
+  :param trackers: nx5 array, where n is equal to the number of active tracks. This object is returned by Sort.update
+  :type trackers: np.ndarray
+  :param yolodets: list of the original detections, in yolo format (class, xc, yc, w, h, score)
+  :type yolodets: list(list(float | int))
+  :param frame: current frame number
+  :type frame: int
+  :param file_obj: file object that we are writing to
+  :type file_obj: TextIOWrapper or equivalent open stream
+  """
   for t in trackers:
     xc = ((t[0] + t[2])/2) / 640.
     yc = ((t[1] + t[3])/2 / 640.)
@@ -273,6 +286,13 @@ def update_outfile(trackers, yolodets, frame, file_obj):
     print(f'{track_id}, {frame}, {det_class}, {xc}, {yc}, {w}, {h}, {score}', file=file_obj)
 
 def run_sort(infile):
+  """
+
+  :param infile: path to the input tarfile, containing the inferences as .txt files
+  :type infile: str
+  :return: the dataframe that was written to the outfile
+  :rtype: pd.DataFrame
+  """
   min_track_len = 90
   max_age = 3
   outfile_path = infile.replace('inference.tar', 'tracks.csv')
