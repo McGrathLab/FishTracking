@@ -292,10 +292,10 @@ class Sort(object):
 
 def yolodet_to_sortdet(det):
     """converts a detection of the form [class, x_center, y_center, width, height, score] to the form
-  [x1, x2, y1, y2, score, class] """
+  [x1, y1, x2, y2, score, class] """
     det = [float(d) for d in det]
     scaled_det = [det[0], det[1] * IMG_W, det[2] * IMG_H, det[3] * IMG_W, det[4] * IMG_H, det[5]]
-    return np.array([(scaled_det[1] - scaled_det[3]) / 2,
+    return np.array([scaled_det[1] - scaled_det[3] / 2,
                      scaled_det[2] - scaled_det[4] / 2,
                      scaled_det[1] + scaled_det[3] / 2,
                      scaled_det[2] + scaled_det[4] / 2,
@@ -325,7 +325,7 @@ def update_outfile(trackers, frame, file_obj):
         print(f'{track_id}, {frame}, {xc}, {yc}, {w}, {h}, {class_id}, {u_dot}, {v_dot}, {s_dot}', file=file_obj)
 
 
-def run_sort(infile, min_track_len=90, max_age=5, min_hits=3):
+def run_sort(infile, min_track_len=90, max_age=30, min_hits=3):
     """
 
   :param infile: path to the input tarfile, containing the inferences as .txt files
